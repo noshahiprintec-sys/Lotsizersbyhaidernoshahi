@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lot Size Calculator | Pak Stocks Trading Institute</title>
+<meta name="description" content="Free forex and gold lot size calculator by Pak Stocks Trading Institute.">
+<style>
+  :root{
+    --navy:#2b3085;
+    --green:#00a54f;
+    --bg:#f2f5fa;
+    --card:#ffffff;
+    --text:#1b1f3b;
+    --muted:#667085;
+    --border:#d9dff0;
+    --input:#f8faff;
+    --danger:#d92d20;
+    --shadow:0 10px 30px rgba(43,48,133,.12);
+  }
+  :root[data-theme="dark"]{
+    --bg:#0e1124;
+    --card:#171b36;
+    --text:#eef0ff;
+    --muted:#9aa3c7;
+    --border:#2a3060;
+    --input:#10142b;
+    --shadow:0 10px 30px rgba(0,0,0,.5);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    padding:24px 16px 40px;
+  }
+  .wrap{width:100%;max-width:520px}
+  .card{
+    background:var(--card);
+    border-radius:20px;
+    box-shadow:var(--shadow);
+    padding:26px 22px 20px;
+    border-top:5px solid var(--green);
+    position:relative;
+  }
+  .theme-btn{
+    position:absolute;top:14px;right:14px;
+    border:1px solid var(--border);
+    background:var(--input);
+    color:var(--text);
+    width:38px;height:38px;border-radius:50%;
+    font-size:17px;cursor:pointer;
+  }
+  .brand{text-align:center;margin-bottom:6px}
+  .brand img{max-width:230px;width:70%;height:auto}
+  .brand .fallback{
+    display:none;font-weight:800;letter-spacing:.5px;font-size:20px;color:var(--navy)
+  }
+  .brand .fallback span{color:var(--green)}
+  :root[data-theme="dark"] .brand .fallback{color:#fff}
+  h1{
+    text-align:center;font-size:22px;margin:8px 0 4px;color:var(--navy)
+  }
+  :root[data-theme="dark"] h1{color:#fff}
+  .sub{text-align:center;color:var(--muted);font-size:13px;margin:0 0 20px}
+  label{display:block;font-size:13px;font-weight:600;margin:14px 0 6px}
+  input,select{
+    width:100%;padding:12px 14px;font-size:16px;
+    border:1.5px solid var(--border);border-radius:12px;
+    background:var(--input);color:var(--text);outline:none;
+  }
+  input:focus,select:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(0,165,79,.18)}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:420px){.row{grid-template-columns:1fr}}
+  .hint{font-size:12px;color:var(--muted);margin-top:5px}
+  .hidden{display:none}
+  .btns{display:grid;grid-template-columns:2fr 1fr;gap:10px;margin-top:20px}
+  button.main{
+    padding:14px;border:0;border-radius:12px;font-size:16px;font-weight:700;
+    background:linear-gradient(135deg,var(--navy),#3b42b5);color:#fff;cursor:pointer;
+  }
+  button.main:hover{filter:brightness(1.08)}
+  button.reset{
+    padding:14px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;
+    background:transparent;color:var(--text);border:1.5px solid var(--border);
+  }
+  .error{
+    margin-top:14px;padding:10px 12px;border-radius:10px;font-size:14px;
+    background:rgba(217,45,32,.1);color:var(--danger);border:1px solid rgba(217,45,32,.3);
+  }
+  .result{margin-top:20px}
+  .lot-box{
+    text-align:center;padding:18px 12px;border-radius:16px;
+    background:linear-gradient(135deg,rgba(0,165,79,.14),rgba(43,48,133,.12));
+    border:1.5px solid var(--green);
+  }
+  .lot-box .t{font-size:13px;color:var(--muted);font-weight:600}
+  .lot-box .v{font-size:44px;font-weight:800;color:var(--green);line-height:1.15}
+  .lot-box .u{font-size:13px;color:var(--muted)}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+  .stat{
+    background:var(--input);border:1px solid var(--border);border-radius:12px;padding:10px 12px;
+  }
+  .stat .k{font-size:12px;color:var(--muted)}
+  .stat .n{font-size:17px;font-weight:700;margin-top:2px}
+  .stat .n.good{color:var(--green)}
+  .stat .n.bad{color:var(--danger)}
+  .msg{
+    margin-top:14px;text-align:center;font-weight:600;font-size:14px;
+    padding:10px;border-radius:10px;
+    background:rgba(0,165,79,.12);color:var(--green);
+  }
+  .msg.warn{background:rgba(217,119,6,.12);color:#b45309}
+  :root[data-theme="dark"] .msg.warn{color:#fbbf24}
+  .copy{
+    margin-top:12px;width:100%;padding:11px;border-radius:12px;font-size:14px;font-weight:600;
+    background:transparent;border:1.5px dashed var(--border);color:var(--text);cursor:pointer;
+  }
+  footer{
+    text-align:center;margin-top:22px;padding-top:14px;border-top:1px solid var(--border);
+    font-size:13px;color:var(--muted);
+  }
+  footer b{color:var(--navy)}
+  :root[data-theme="dark"] footer b{color:#fff}
+  .disc{font-size:11px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <button class="theme-btn" id="themeBtn" type="button" aria-label="Toggle dark mode">🌓</button>
+
+    <div class="brand">
+      <img src="logo.png" alt="Pak Stocks Trading Institute"
+           onerror="this.style.display='none';document.getElementById('fb').style.display='block'">
+      <div class="fallback" id="fb">PAK STOCKS <span>TRADING INSTITUTE</span></div>
+    </div>
+
+    <h1>Lot Size Calculator</h1>
+    <p class="sub">Risk ko control karo, lot size sahi nikalo</p>
+
+    <label for="pair">Instrument</label>
+    <select id="pair">
+      <option value="EURUSD">EUR/USD</option>
+      <option value="GBPUSD">GBP/USD</option>
+      <option value="AUDUSD">AUD/USD</option>
+      <option value="NZDUSD">NZD/USD</option>
+      <option value="USDJPY">USD/JPY</option>
+      <option value="USDCHF">USD/CHF</option>
+      <option value="USDCAD">USD/CAD</option>
+      <option value="XAUUSD">XAU/USD (Gold)</option>
+      <option value="BTCUSDT">BTCUSDT.P (Bitcoin Perpetual)</option>
+      <option value="CUSTOM">Other (enter pip value)</option>
+    </select>
+
+    <div id="priceWrap" class="hidden">
+      <label for="price">Current Price</label>
+      <input id="price" type="number" inputmode="decimal" step="any" placeholder="e.g. 150.25">
+      <div class="hint">Is pair ki pip value price par depend karti hai.</div>
+    </div>
+
+    <div id="customWrap" class="hidden">
+      <label for="custom">Pip value per 1.00 lot ($)</label>
+      <input id="custom" type="number" inputmode="decimal" step="any" placeholder="e.g. 10">
+    </div>
+
+    <label for="account">Account Size ($)</label>
+    <input id="account" type="number" inputmode="decimal" step="any" min="0" placeholder="e.g. 1000">
+
+    <div class="row">
+      <div>
+        <label for="risk">Risk (%)</label>
+        <input id="risk" type="number" inputmode="decimal" step="any" min="0" placeholder="e.g. 1">
+      </div>
+      <div>
+        <label for="sl" id="slLabel">Stop Loss (Pips)</label>
+        <input id="sl" type="number" inputmode="decimal" step="any" min="0" placeholder="e.g. 20">
+      </div>
+    </div>
+
+    <label for="tp"><span id="tpLabel">Take Profit (Pips)</span> <span style="font-weight:400;color:var(--muted)">- optional</span></label>
+    <input id="tp" type="number" inputmode="decimal" step="any" min="0" placeholder="e.g. 40">
+
+    <div class="btns">
+      <button class="main" id="calc" type="button">Calculate Lot Size</button>
+      <button class="reset" id="reset" type="button">Reset</button>
+    </div>
+
+    <div id="err" class="error hidden" role="alert"></div>
+
+    <div id="result" class="result hidden">
+      <div class="lot-box">
+        <div class="t" id="lotTitle">Recommended Lot Size</div>
+        <div class="v" id="lots">0.00</div>
+        <div class="u" id="lotUnit">lots</div>
+      </div>
+      <div class="grid">
+        <div class="stat"><div class="k">Risk Amount</div><div class="n bad" id="riskAmt">-</div></div>
+        <div class="stat"><div class="k" id="pipLabel">Pip Value (for this lot)</div><div class="n" id="pipVal">-</div></div>
+      </div>
+      <div class="grid" id="tpGrid" style="display:none">
+        <div class="stat"><div class="k">Potential Profit</div><div class="n good" id="profit">-</div></div>
+        <div class="stat"><div class="k">Risk : Reward</div><div class="n" id="rr">-</div></div>
+      </div>
+      <div class="msg" id="msg"></div>
+      <button class="copy" id="copyBtn" type="button">Copy result</button>
+    </div>
+
+    <footer>Prepared by <b>Haider Noshahi</b></footer>
+  </div>
+</div>
+
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+
+  // Pip value per 1.00 standard lot, in USD
+  // type "usdq": USD is quote currency  -> fixed $10 per pip
+  // type "usdb": USD is base currency   -> pipSize * 100000 / price
+  // type "gold": 1 pip = 0.10, 100 oz per lot -> $10 per pip
+  var PAIRS = {
+    EURUSD:{type:"usdq"}, GBPUSD:{type:"usdq"}, AUDUSD:{type:"usdq"}, NZDUSD:{type:"usdq"},
+    USDJPY:{type:"usdb", pip:0.01},
+    USDCHF:{type:"usdb", pip:0.0001},
+    USDCAD:{type:"usdb", pip:0.0001},
+    XAUUSD:{type:"gold"},
+    BTCUSDT:{type:"btc"},   // 1 contract = 1 BTC, SL/TP in $ price distance
+    CUSTOM:{type:"custom"}
+  };
+
+  function show(el, on){ el.classList.toggle("hidden", !on); }
+  function money(n){ return "$" + n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}); }
+
+  function onPairChange(){
+    var p = PAIRS[$("pair").value];
+    show($("priceWrap"), p.type === "usdb");
+    show($("customWrap"), p.type === "custom");
+    var btc = p.type === "btc";
+    $("slLabel").textContent = btc ? "Stop Loss ($ distance)" : "Stop Loss (Pips)";
+    $("tpLabel").textContent = btc ? "Take Profit ($ distance)" : "Take Profit (Pips)";
+    $("sl").placeholder = btc ? "e.g. 500" : "e.g. 20";
+    $("tp").placeholder = btc ? "e.g. 1000" : "e.g. 40";
+    $("lotTitle").textContent = btc ? "Recommended Position Size" : "Recommended Lot Size";
+    $("lotUnit").textContent = btc ? "BTC" : "lots";
+    $("pipLabel").textContent = btc ? "Value per $1 move" : "Pip Value (for this lot)";
+  }
+
+  function pipValuePerLot(){
+    var p = PAIRS[$("pair").value];
+    if(p.type === "usdq" || p.type === "gold") return 10;
+    if(p.type === "btc") return 1; // 1 BTC gains/loses $1 per $1 move
+    if(p.type === "usdb"){
+      var price = parseFloat($("price").value);
+      if(!(price > 0)) return {error:"Is pair ke liye current price enter karein."};
+      return p.pip * 100000 / price;
+    }
+    var c = parseFloat($("custom").value);
+    if(!(c > 0)) return {error:"Pip value enter karein (1.00 lot ke liye, $ me)."};
+    return c;
+  }
+
+  var lastText = "";
+
+  function calculate(){
+    var err = $("err");
+    show(err, false);
+    show($("result"), false);
+
+    var account = parseFloat($("account").value);
+    var risk = parseFloat($("risk").value);
+    var sl = parseFloat($("sl").value);
+    var tp = parseFloat($("tp").value);
+
+    function fail(m){ err.textContent = m; show(err, true); }
+
+    if(!(account > 0)) return fail("Account size sahi enter karein (0 se zyada).");
+    if(!(risk > 0))    return fail("Risk percentage sahi enter karein (0 se zyada).");
+    if(risk > 100)     return fail("Risk 100% se zyada nahi ho sakta.");
+    if(!(sl > 0))      return fail("Stop loss pips sahi enter karein (0 se zyada).");
+
+    var pv = pipValuePerLot();
+    if(typeof pv === "object") return fail(pv.error);
+
+    var riskAmount = account * risk / 100;
+    var btc = PAIRS[$("pair").value].type === "btc";
+    var step = btc ? 0.001 : 0.01;
+    var dec = btc ? 3 : 2;
+    var unitName = btc ? "BTC" : "lots";
+    var slUnit = btc ? "$" : "pips";
+    var rawLots = riskAmount / (sl * pv);
+    var lots = Math.floor(rawLots / step + 1e-9) * step;
+
+    $("lots").textContent = lots.toFixed(dec);
+    $("riskAmt").textContent = money(riskAmount);
+
+    var actualRisk = lots * sl * pv;
+    $("pipVal").textContent = money(lots * pv) + (btc ? " / $1" : " / pip");
+
+    var msg = $("msg");
+    var text = (btc ? "Position size: " : "Lot size: ") + lots.toFixed(dec) + " " + unitName +
+               " | Risk: " + money(riskAmount) + " (" + risk + "%) | SL: " + sl + " " + slUnit;
+
+    if(lots < step - 1e-12){
+      msg.textContent = "Is risk par minimum size (" + step + ") bhi zyada hai. Risk % ya account size barhayen, ya stop loss chota karein.";
+      msg.classList.add("warn");
+      $("lots").textContent = (0).toFixed(dec);
+      text = "Trade skip: minimum size bhi risk limit se zyada hai.";
+    } else {
+      msg.textContent = "Aap ye trade le sakte hain. Good luck! Actual risk: " + money(actualRisk);
+      msg.classList.remove("warn");
+    }
+
+    if(tp > 0 && lots >= step - 1e-12){
+      var profit = lots * tp * pv;
+      $("profit").textContent = money(profit);
+      $("rr").textContent = "1 : " + (tp / sl).toFixed(2);
+      $("tpGrid").style.display = "grid";
+      text += " | TP: " + tp + " " + slUnit + " | Profit: " + money(profit) + " | RR 1:" + (tp/sl).toFixed(2);
+    } else {
+      $("tpGrid").style.display = "none";
+    }
+
+    lastText = text + " (Pak Stocks Trading Institute)";
+    $("copyBtn").textContent = "Copy result";
+    show($("result"), true);
+  }
+
+  function resetAll(){
+    ["price","custom","account","risk","sl","tp"].forEach(function(i){ $(i).value = ""; });
+    show($("err"), false);
+    show($("result"), false);
+  }
+
+  function copyResult(){
+    var done = function(){ $("copyBtn").textContent = "Copied!"; };
+    try{
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(lastText).then(done, function(){});
+        return;
+      }
+    }catch(e){}
+    var ta = document.createElement("textarea");
+    ta.value = lastText; document.body.appendChild(ta); ta.select();
+    try{ document.execCommand("copy"); done(); }catch(e){}
+    document.body.removeChild(ta);
+  }
+
+  // Theme
+  function applyTheme(t){ document.documentElement.setAttribute("data-theme", t); }
+  var saved = null;
+  try{ saved = localStorage.getItem("pstiTheme"); }catch(e){}
+  if(!saved){
+    saved = (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light";
+  }
+  applyTheme(saved);
+  $("themeBtn").addEventListener("click", function(){
+    var next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    applyTheme(next);
+    try{ localStorage.setItem("pstiTheme", next); }catch(e){}
+  });
+
+  $("pair").addEventListener("change", onPairChange);
+  $("calc").addEventListener("click", calculate);
+  $("reset").addEventListener("click", resetAll);
+  $("copyBtn").addEventListener("click", copyResult);
+  document.addEventListener("keydown", function(e){
+    if(e.key === "Enter" && e.target.tagName === "INPUT") calculate();
+  });
+  onPairChange();
+})();
+</script>
+</body>
+</html>
